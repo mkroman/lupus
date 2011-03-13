@@ -1,0 +1,73 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+$:.unshift File.dirname(__FILE__) + '/../library'
+
+require 'lupus'
+
+begin
+  require 'majic'
+  $COLOR = true
+rescue LoadError
+  $COLOR = false
+end
+
+Banner =<<-EOD
+   _                          
+  | |   _   _ _ __  _   _ ___ 
+  | |  | | | | '_ \\| | | / __|
+  | |__| |_| | |_) | |_| \\__ \\
+  |_____\\__,_| .__/ \\__,_|___/
+             |_|
+EOD
+
+if ARGV.count < 1
+  if $COLOR
+    puts Banner ^ :bold
+
+    puts "Usage" ^ :bold
+    puts " #$0 #{"<thread>" ^ :bold}"
+    puts "Example" ^ :bold
+    puts " #$0 #{"http://boards.4chan.org/hr/res/1269029" ^ :bold}"
+  else
+    puts Banner
+
+    puts "Usage"
+    puts " #$0 <thread>"
+    puts "Exaple"
+    puts " #$0 http://boards.4chan.org/hr/res/1269029"
+  end
+
+  exit 1
+end
+
+ARGV.each do |address|
+  begin
+    thread = Lupus::Thread.new address
+
+    if $COLOR
+      puts "-- Downloading #{thread.files.count.to_s ^ :green} files."
+    else
+      puts "-- Downloading #{thread.files.count} files."
+    end
+
+    archive  = Lupus::Archive.new thread
+    filename = "#{thread.id}.zip"
+
+    if $COLOR
+      puts "-- Packing as #{filename ^ :green}."
+    else
+      puts "-- Packing as #{thread.id}.zip."
+    end
+
+    archive.pack 
+
+    puts "-- Done."
+  rescue Exception
+    if $COLOR
+      puts "#{"Error" ^ :red} - Could not fetch #{address ^ :bold} - #{$!.class.name ^ :bold}: #{$!.message}"
+    else
+      puts "Error - Could not fetch #{address} - #{$!.class.name}: #{$!.message}"
+    end
+  end
+end

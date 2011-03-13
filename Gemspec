@@ -1,0 +1,19 @@
+# encoding: utf-8
+
+Gem::Specification.new do |spec|
+  spec.name    = "lupus"
+  spec.version = "0.1"
+  spec.summary = "A tool to extract and zip the images off of a 4chan thread."
+
+  spec.author  = "Mikkel Kroman"
+  spec.email   = "mk@maero.dk"
+
+  spec.add_dependency "rubyzip", ">= 0.9.4"
+  spec.add_dependency "majic", ">= 0.1"
+
+  spec.files = Dir["library/**/*.rb"]
+  spec.bindir = "executables"
+  spec.executables << "lupus"
+  spec.require_path = "library"
+  spec.required_ruby_version = ">= 1.9.1"
+end
